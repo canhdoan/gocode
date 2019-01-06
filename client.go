@@ -238,15 +238,19 @@ func prepareFilenameDataCursor() (string, []byte, int) {
 
 func prepareDataCursorExt() ([]byte, int) {
 	var data []byte
-	offset := ""
+	// var err error
 	cursor := -1
 
-	fmt.Println(flag.NArg())
+	src := `package main
+import (
+    "fmt"
+)
 
-	offset = flag.Arg(1)
-	cursor, _ = strconv.Atoi(offset)
-
-	data = []byte(*g_src)
+func main() {
+    fmt.
+}`
+	data = []byte(src)
+	cursor, _ = strconv.Atoi("57")
 
 	return data, cursor
 }
