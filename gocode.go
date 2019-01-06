@@ -21,6 +21,7 @@ var (
 	g_unimported_packages = flag.Bool("unimported-packages", false, "propose completions for standard library packages not explicitly imported")
 	g_fallback_to_source  = flag.Bool("fallback-to-source", false, "if importing a package fails, fallback to the source importer")
 	g_autocomplete_ex     = flag.Bool("external", false, "For cx only")
+	g_src                 = flag.String("src", "", "For cx only")
 )
 
 func getSocketPath() string {
@@ -33,7 +34,7 @@ func getSocketPath() string {
 
 func usage() {
 	fmt.Fprintf(os.Stderr,
-		"Usage: %s [-s] [-f=<format>] [-in=<path>] [-sock=<type>] [-addr=<addr>] [-ext=<external>]\n"+
+		"Usage: %s [-s] [-f=<format>] [-in=<path>] [-sock=<type>] [-addr=<addr>] [-ext=<external>] [-src=<src>]\n"+
 			"       <command> [<args>]\n\n",
 		os.Args[0])
 	fmt.Fprintf(os.Stderr,

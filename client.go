@@ -131,7 +131,31 @@ func cmdAutoComplete(c *rpc.Client) {
 	var req AutoCompleteRequest
 
 	if *g_autocomplete_ex {
+		req.Data, req.Cursor = prepareDataCursorExt()
+		req.Context = cache.PackContext(&build.Default)
+		req.Source = *g_source
+		req.Builtin = *g_builtin
+		req.IgnoreCase = *g_ignore_case
+		req.UnimportedPackages = *g_unimported_packages
+		req.FallbackToSource = *g_fallback_to_source
 
+		var res AutoCompleteReply
+		var err error
+		if c == nil {
+			s := Server{}
+			err = s.AutoComplete(&req, &res)
+		} else {
+			err = c.Call("Server.AutoComplete", &req, &res)
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt := suggest.Formatters[*g_format]
+		if fmt == nil {
+			fmt = suggest.NiceFormat
+		}
+		fmt(os.Stdout, res.Candidates, res.Len)
 	} else {
 		req.Filename, req.Data, req.Cursor = prepareFilenameDataCursor()
 		req.Context = cache.PackContext(&build.Default)
@@ -212,9 +236,17 @@ func prepareFilenameDataCursor() (string, []byte, int) {
 	return filename, file, cursor
 }
 
-func prepareFilenameDataCursorExt() (string, []byte, int) {
+func prepareDataCursorExt() ([]byte, int) {
 	var data []byte
-	var err error
-	filename := ""
+	offset := ""
+	cursor := -1
 
+	fmt.Println(flag.NArg())
+
+	offset = flag.Arg(1)
+	cursor, _ = strconv.Atoi(offset)
+
+	data = []byte(*g_src)
+
+	return data, cursor
 }
